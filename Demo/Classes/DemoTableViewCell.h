@@ -10,6 +10,6 @@
 
 @interface DemoTableViewCell : UITableViewCell <JMImageCacheDelegate>
 
-@property (nonatomic) NSString *imageURL;
+@property (strong, nonatomic) NSString *imageURL;
 
 @end
