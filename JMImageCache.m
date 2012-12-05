@@ -210,6 +210,31 @@ JMImageCache *_sharedCache = nil;
 		[super setObject:i forKey:key];
 	}
 }
+- (void) storeImage:(UIImage *)i forKey:(NSString *)key completionBlock:(void(^)(UIImage *image))completion {
+	if (!key)
+    {
+        return;
+    }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSData *data = UIImagePNGRepresentation(i);
+        
+        NSString *cachePath = cachePathForKey(key);
+        NSInvocation *writeInvocation = [NSInvocation invocationWithMethodSignature:[self methodSignatureForSelector:@selector(writeData:toPath:)]];
+        
+        [writeInvocation setTarget:self];
+        [writeInvocation setSelector:@selector(writeData:toPath:)];
+        [writeInvocation setArgument:&data atIndex:2];
+        [writeInvocation setArgument:&cachePath atIndex:3];
+        
+        [self performDiskWriteOperation:writeInvocation];
+        [self setImage:i forKey:key];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(completion) completion(i);
+        });
+    });
+}
 - (void) setImage:(UIImage *)i forURL:(NSURL *)url {
     [self setImage:i forKey:keyForURL(url)];
 }

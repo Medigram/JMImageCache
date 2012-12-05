@@ -35,6 +35,7 @@
 - (UIImage *) imageFromDiskForURL:(NSURL *)url;
 
 - (void) setImage:(UIImage *)i forKey:(NSString *)key;
+- (void) storeImage:(UIImage *)i forKey:(NSString *)key completionBlock:(void(^)(UIImage *image))completion;
 - (void) setImage:(UIImage *)i forURL:(NSURL *)url;
 - (void) removeImageForKey:(NSString *)key;
 - (void) removeImageForURL:(NSString *)url;
